@@ -1,0 +1,161 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ */
+package exp3_s7_grupo4;
+
+/**
+ *
+ * @author vurru
+ */
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Exp3_S7_Grupo4 {
+    // Variables de instancia
+    private String nombreTeatro;
+    private int capacidadSala;
+    private int entradasDisponibles;
+    private double precioEntrada;
+
+    // Variables estáticas
+    private static int totalEntradasVendidas = 0;
+    private static double ingresosTotales = 0;
+
+    // Variables locales
+    private String ubicacionEntrada;
+    private double costoBase;
+    private double descuento;
+    private double costoFinal;
+
+    // Lista para almacenar información de ventas
+    private ArrayList<String> ventas = new ArrayList<>();
+
+    // Constructor
+    public Exp3_S7_Grupo4(String nombreTeatro, int capacidadSala, int entradasDisponibles, double precioEntrada) {
+        this.nombreTeatro = nombreTeatro;
+        this.capacidadSala = capacidadSala;
+        this.entradasDisponibles = entradasDisponibles;
+        this.precioEntrada = precioEntrada;
+    }
+
+    // Menú interactivo
+    public void mostrarMenu() {
+        Scanner scanner = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("Menú Interactivo:");
+            System.out.println("1. Venta de entradas");
+            System.out.println("2. Visualizar resumen de ventas");
+            System.out.println("3. Generar boleta");
+            System.out.println("4. Calcular ingresos totales");
+            System.out.println("5. Salir del programa");
+            System.out.print("Seleccione una opción: ");
+            opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    ventaEntradas();
+                    break;
+                case 2:
+                    visualizarResumenVentas();
+                    break;
+                case 3:
+                    generarBoleta();
+                    break;
+                case 4:
+                    calcularIngresosTotales();
+                    break;
+                case 5:
+                    System.out.println("Gracias por su compra.");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Por favor, seleccione nuevamente.");
+            }
+        } while (opcion != 5);
+    }
+
+    // Venta de entradas
+    private void ventaEntradas() {
+        Scanner scanner = new Scanner(System.in);
+
+        // Solicitar ubicación de la entrada
+        System.out.println("Seleccione la ubicación de la entrada (VIP, Platea, Balcón): ");
+        ubicacionEntrada = scanner.nextLine();
+
+        // Calcular costo base
+        if (ubicacionEntrada.equalsIgnoreCase("VIP")) {
+            costoBase = precioEntrada * 1.5; // Ejemplo: VIP es 50% más caro
+        } else if (ubicacionEntrada.equalsIgnoreCase("Platea")) {
+            costoBase = precioEntrada;
+        } else if (ubicacionEntrada.equalsIgnoreCase("Balcón")) {
+            costoBase = precioEntrada * 0.8; // Ejemplo: Balcón tiene un 20% de descuento
+        } else {
+            System.out.println("Ubicación de entrada no válida.");
+            return;
+        }
+
+        // Aplicar descuentos
+        System.out.println("¿Es usted estudiante? (Sí/No): ");
+        String respuesta = scanner.nextLine();
+        if (respuesta.equalsIgnoreCase("Sí")) {
+            descuento = 0.1; // Descuento del 10% para estudiantes
+        } else {
+            System.out.println("¿Es usted una persona de la tercera edad? (Sí/No): ");
+            respuesta = scanner.nextLine();
+            if (respuesta.equalsIgnoreCase("Sí")) {
+                descuento = 0.15; // Descuento del 15% para personas de la tercera edad
+            } else {
+                descuento = 0; // Sin descuento
+            }
+        }
+
+        // Calcular costo final
+        costoFinal = costoBase - (costoBase * descuento);
+
+        // Almacenar información de la venta
+        ventas.add("Ubicación: " + ubicacionEntrada + ", Costo Final: $" + costoFinal);
+
+        // Actualizar estadísticas globales
+        totalEntradasVendidas++;
+        ingresosTotales += costoFinal;
+
+        // Actualizar número de entradas disponibles
+        entradasDisponibles--;
+
+        System.out.println("Venta realizada con éxito.");
+    }
+
+    // Visualizar resumen de ventas
+    private void visualizarResumenVentas() {
+        System.out.println("Resumen de ventas:");
+        for (String venta : ventas) {
+            System.out.println(venta);
+        }
+    }
+
+    // Generar boleta
+    private void generarBoleta() {
+        if (!ventas.isEmpty()) {
+            System.out.println("Boleta detallada:");
+            for (String venta : ventas) {
+                System.out.println(venta);
+            }
+            System.out.println("Gracias por su compra.");
+        } else {
+            System.out.println("No hay ventas registradas.");
+        }
+    }
+
+    // calcular ingresos totales
+    private void calcularIngresosTotales() {
+        System.out.println("Ingresos totales acumulados: $" + ingresosTotales);
+    }
+
+    // Método principal
+    public static void main(String[] args) {
+        Teatro teatro = new Teatro("Teatro Moro", 1000, 1000, 50.0); // Ejemplo de inicialización
+        teatro.mostrarMenu();
+    }
+}
